@@ -178,6 +178,42 @@ export default function DocsPage() {
           </pre>
         </div>
 
+        {/* ChatGPT Custom GPT & User Permission Integration */}
+        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <Zap className="h-5 w-5 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-lg font-extrabold text-white">ChatGPT / Custom GPT Integration Guide</h3>
+              <p className="text-slate-400 text-xs">Allow ChatGPT to open cloud browsers, request user permission, and perform authenticated web automations.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+            <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/80 space-y-2">
+              <span className="text-emerald-400 font-bold">Step 1: Custom GPT Action</span>
+              <p className="text-slate-400 font-sans text-[11px]">
+                Add TinyFish REST OpenAPI schema (`/v1/agent/execute`) into Custom GPT Action capabilities in ChatGPT.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/80 space-y-2">
+              <span className="text-cyan-400 font-bold">Step 2: User Permission Request</span>
+              <p className="text-slate-400 font-sans text-[11px]">
+                When ChatGPT requests a browser action, the user receives an interactive prompt in TinyFish Playground to confirm permission.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl border border-slate-800 bg-slate-950/80 space-y-2">
+              <span className="text-indigo-400 font-bold">Step 3: Account Session Handoff</span>
+              <p className="text-slate-400 font-sans text-[11px]">
+                User logs into target account in TinyFish cookie vault, enabling ChatGPT to perform authenticated actions automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>

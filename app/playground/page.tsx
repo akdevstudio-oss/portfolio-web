@@ -24,6 +24,11 @@ import { toast } from "sonner"
 // Quick Preset Prompts
 const QUICK_PRESETS = [
   {
+    label: "🤖 ChatGPT Account Automation",
+    url: "https://app.socialhub.io/dashboard",
+    prompt: "Open browser with ChatGPT permission, perform secure account login, and automate daily posts."
+  },
+  {
     label: "🛒 E-Commerce Price Extractor",
     url: "https://shop.nexus-tech.io/item/9921",
     prompt: "Extract product title, price, discount percentage, and seller rating as clean JSON."
@@ -37,11 +42,6 @@ const QUICK_PRESETS = [
     label: "🔐 Cloudflare Stealth Bypass",
     url: "https://protected-data.io/login",
     prompt: "Handle Cloudflare Turnstile challenge, fill form with test credentials, and snapshot DOM."
-  },
-  {
-    label: "📊 Performance & Vitals Audit",
-    url: "https://stripe.com",
-    prompt: "Measure DOM loading time, check console error logs, and record network waterfall."
   }
 ]
 
@@ -53,6 +53,11 @@ export default function PlaygroundPage() {
   const [autoCaptcha, setAutoCaptcha] = React.useState(true)
   const [proxyLocation, setProxyLocation] = React.useState("us-east")
   const [viewport, setViewport] = React.useState<"desktop" | "mobile">("desktop")
+
+  // ChatGPT Integration & User Permission / Account Auth State
+  const [chatGptGranted, setChatGptGranted] = React.useState(true)
+  const [accountAuthStatus, setAccountAuthStatus] = React.useState<"unauthenticated" | "logging_in" | "authenticated">("authenticated")
+  const [userAccountEmail, setUserAccountEmail] = React.useState("user.alex@gmail.com")
 
   const [isRunning, setIsRunning] = React.useState(false)
   const [activeStepIndex, setActiveStepIndex] = React.useState(0)
@@ -230,6 +235,71 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
+        </div>
+
+        {/* ChatGPT Authorization & Account Session Banner */}
+        <div className="rounded-xl border border-cyan-500/30 bg-cyan-950/20 p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4 text-emerald-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white">ChatGPT / Custom GPT Agent Permissions</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                  chatGptGranted ? "bg-emerald-950 text-emerald-400 border border-emerald-800/50" : "bg-amber-950 text-amber-400 border border-amber-800/50"
+                }`}>
+                  {chatGptGranted ? "PERMITTED BY USER" : "PERMISSION REQUIRED"}
+                </span>
+              </div>
+              <p className="text-slate-400 text-[11px] font-sans mt-0.5">
+                {chatGptGranted
+                  ? `ChatGPT is authorized to control browser session for account: ${userAccountEmail}`
+                  : "User must grant permission before ChatGPT can launch browser and interact with logged-in services."}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => {
+                setChatGptGranted(!chatGptGranted)
+                toast(chatGptGranted ? "Revoked ChatGPT browser access" : "Granted ChatGPT browser access")
+              }}
+              className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                chatGptGranted
+                  ? "border-emerald-500/50 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900/80"
+                  : "border-cyan-500/50 bg-cyan-500 text-slate-950 hover:bg-cyan-400"
+              }`}
+            >
+              {chatGptGranted ? "Revoke Access" : "Grant Permission"}
+            </button>
+
+            {accountAuthStatus === "authenticated" ? (
+              <button
+                onClick={() => {
+                  setAccountAuthStatus("unauthenticated")
+                  toast.info("Logged out from isolated browser session")
+                }}
+                className="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:text-white"
+              >
+                Session Active ({userAccountEmail.split("@")[0]})
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setAccountAuthStatus("logging_in")
+                  setTimeout(() => {
+                    setAccountAuthStatus("authenticated")
+                    toast.success(`Account session connected for ${userAccountEmail}`)
+                  }, 1200)
+                }}
+                className="px-3 py-1.5 rounded-lg border border-cyan-500/40 bg-cyan-950/50 text-cyan-300 hover:bg-cyan-900/60"
+              >
+                {accountAuthStatus === "logging_in" ? "Authenticating..." : "Login User Account"}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Configuration Drawer */}
